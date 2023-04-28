@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Chart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <header class="w-full flex justify-center">
+        <h1 class="text-5xl">
+            Live Chart
+        </h1>
+    </header>
+    <main class="w-full text-center">
+        <textarea id="txtShow" cols="30" rows="10" disabled></textarea><br>
+        <input id="txtInput" type="text" class="text-black" /><br>
+        <button id="btnSend">送出</button>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", event => {
+            let keyinDom = document.querySelector('#txtInput')
+            let showDom = document.querySelector('#txtShow')
+            let sendBtn = document.getElementById('btnSend')
+
+            sendBtn.addEventListener('click', () => {
+                let txt = keyinDom.value 
+                ws.send(txt)
+            })
+
+            let url = 'ws://localhost:3000'
+            var ws = new WebSocket(url)
+
+            ws.onopen = () => {
+                console.log('open connection')
+            }
+
+            ws.onclose = () => {
+                console.log('close connection')
+            }
+
+            ws.onmessage = event => {
+                let txt = event.data 
+                if (!showDom.value) showDom.value = txt 
+                else showDom.value = showDom.value + "\n" + txt 
+                keyinDom.value = ""
+            }
+
+        })
+    </script>
+
+</body>
+</html>
